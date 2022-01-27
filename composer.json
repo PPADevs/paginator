@@ -1,14 +1,13 @@
 {
-  "name": "dadeky/paginator",
+  "name": "PPADevs/paginator",
   "description": "Library for pagination.",
   "authors": [
     {
-      "name": "Darko Dvorski",
-      "email": "dadeky@gmail.com",
-      "role": "Developer"
+      "name": "PPADevs",
+      "role": "Developera"
     }
   ],
-  "homepage": "https://github.com/dadeky/paginator",
+  "homepage": "https://github.com/PPADevs/paginator",
   "license": "BSD-2-Clause",
   "keywords": [
     "paginator"
@@ -17,8 +16,8 @@
     "sort-packages": true
   },
   "require": {
-    "php": ">=5.5",
-    "doctrine/orm": "^2.5"
+    "php": ">=7.4",
+    "doctrine/orm": "^2.11"
   },
   "autoload": {
     "psr-4": {
