@@ -1,1 +1,2 @@
-# paginator
+Paginator library
+======

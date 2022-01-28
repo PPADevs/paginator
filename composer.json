@@ -1,13 +1,13 @@
 {
-  "name": "PPADevs/paginator",
+  "name": "ppadevs/paginator",
   "description": "Library for pagination.",
   "authors": [
     {
-      "name": "PPADevs",
+      "name": "ppadevs",
       "role": "Developera"
     }
   ],
-  "homepage": "https://github.com/PPADevs/paginator",
+  "homepage": "https://github.com/ppadevs/paginator",
   "license": "BSD-2-Clause",
   "keywords": [
     "paginator"
@@ -22,11 +22,6 @@
   "autoload": {
     "psr-4": {
       "Paginator\\": "src/Paginator"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Paginator\\Tests\\": "tests/Paginator/Tests"
     }
   }
 }
