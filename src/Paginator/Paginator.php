@@ -40,6 +40,12 @@ class Paginator {
 		$this->request = $request;
 	}
 
+	/**
+	 * 
+	 * @param string $fieldName
+	 * @param QueryBuilder $qb
+	 * @return string
+	 */
 	private function resolveParameter($fieldName, QueryBuilder $qb)
 	{
 	    $fieldNameArray = explode(".", $fieldName);
@@ -56,6 +62,16 @@ class Paginator {
 	    return $parameter;
 	}
 
+	/**
+	 * 
+	 * @param QueryBuilder $qb
+	 * @param string $groupOperand
+	 * @param string $fieldName
+	 * @param string $operand
+	 * @param string $value
+	 * @param string $prefix
+	 * @return \Doctrine\ORM\QueryBuilder
+	 */
 	private function processRule(
     	QueryBuilder $qb,
     	$groupOperand,
@@ -165,20 +181,22 @@ class Paginator {
 			    break;
 		}
 
-		/*$qb->setParameter($parameter, $value);*/
 		return $qb;
 	}
 
+	/**
+	 * 
+	 * @return number
+	 */
 	private function firstResult()
 	{
 		return ($this->getPageNumber() - 1) * $this->request->getItemCount();
 	}
 
 	/**
-	 * Restricts the query according to the pagination properties
-	 * @param QueryBuilder $qb
-	 * @param string $prefix
-	 * @return QueryBuilder
+	 * 
+	 * @param PaginatableQueryInterface $query
+	 * @return \Paginator\Paginator
 	 */
 	public function paginate(PaginatableQueryInterface $query)
 	{
@@ -219,7 +237,7 @@ class Paginator {
 		}
 
 		// mandatory order spec
-		if (count((array)$this->request->getMandatoryOrderSpecs()) > 0)
+		if (count($this->request->getMandatoryOrderSpecs()) > 0)
 		{
 		    foreach ($this->request->getMandatoryOrderSpecs() as $field => $direction)
 		    {
@@ -227,8 +245,8 @@ class Paginator {
 		    }
 		}
 
-		//ordering
-		if (count((array)$this->request->getOrderSpecs()) > 0)
+		// ordering
+		if (count($this->request->getOrderSpecs()) > 0)
 		{
 			foreach ($this->request->getOrderSpecs() as $field => $direction)
 			{
@@ -265,10 +283,8 @@ class Paginator {
 
 	/**
 	 * Clones a query.
-	 *
-	 * @param Query $query The query.
-	 *
-	 * @return Query The cloned query.
+	 * @param Query $query
+	 * @return \Doctrine\ORM\Query
 	 */
 	private function cloneQuery(Query $query)
 	{
@@ -285,11 +301,19 @@ class Paginator {
 		return $cloneQuery;
 	}
 
+	/**
+	 * 
+	 * @return array
+	 */
 	public function getPaginatedResult()
 	{
 		return $this->paginatedResult;
 	}
 
+	/**
+	 * 
+	 * @return number
+	 */
 	public function getPageNumber()
 	{
 		return $this->request->getPage();

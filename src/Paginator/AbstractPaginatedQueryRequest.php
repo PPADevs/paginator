@@ -5,13 +5,13 @@ abstract class AbstractPaginatedQueryRequest
 {
 	/**
 	 * Page number to be displayed eg. 5
-	 * @var integer
+	 * @var int
 	 * */
 	protected $page;
 	
 	/**
 	 * The number of items per page eg. 25
-	 * @var integer
+	 * @var int
 	 */
 	protected $itemCount;
 	
@@ -23,7 +23,7 @@ abstract class AbstractPaginatedQueryRequest
 	
 	/**
 	 * Parameters by which the data are filtered eg. array('groupOp' => 'AND', 'rules' => array('field'=>'plant', 'op'=>'eq', 'data'=>500))
-	 * @var SearchGroup[]
+	 * @var SearchGroup
 	 */
 	protected $searchParams;
 	
@@ -38,46 +38,48 @@ abstract class AbstractPaginatedQueryRequest
 	
 	/**
 	 * Always order by this spec
-	 * @var \stdClass
+	 * @var array
 	 */
 	protected $mandatoryOrderSpecs;
 	
+	
+	/**
+	 * 
+	 * @param int $page
+	 * @param int $itemCount
+	 * @param string|bool $searchEnabled
+	 * @param \stdClass|array $searchParams
+	 * @param \stdClass|array $orderSpecs
+	 * @param string|bool $resultShouldBePaginated
+	 * @param \stdClass|array $mandatoryOrderSpecs
+	 */
 	public function __construct(
-			$page,
-			$itemCount,
-			$searchEnabled,
-			$searchParams,
-			$orderSpecs,
-			$resultShouldBePaginated,
-	        \stdClass $mandatoryOrderSpecs = null
+		int $page,
+		int $itemCount,
+		$searchEnabled,
+	    $searchParams,
+	    $orderSpecs,
+		$resultShouldBePaginated,
+        $mandatoryOrderSpecs = null
 	){
 		$this->page = $page;
 		$this->itemCount = $itemCount;
+		$this->setOrderSpecs($orderSpecs);
 		$this->setSearchEnabled($searchEnabled);
 		$this->setResultShouldBePaginated($resultShouldBePaginated);
-		$this->orderSpecs = $orderSpecs;
-		$this->setSearchParams($searchParams);
+		$this->setSearchParams($searchParams);		
 		$this->setMandatoryOrderSpecs($mandatoryOrderSpecs);
 	}
 
-    public function getMandatoryOrderSpecs()
-    {
-        return $this->mandatoryOrderSpecs;
-    }
-
-    public function setMandatoryOrderSpecs($mandatoryOrderSpecs)
-    {
-        $this->mandatoryOrderSpecs = $mandatoryOrderSpecs;
-    }
-
-    /**
-     * @param $resultShouldBePaginated
-     */
+	/**
+	 * 
+	 * @param bool|string $resultShouldBePaginated
+	 */
     public function setResultShouldBePaginated($resultShouldBePaginated)
     {
-        if ($resultShouldBePaginated == "true"){
+        if (is_string($resultShouldBePaginated) && strtolower($resultShouldBePaginated) === "true"){
             $resultShouldBePaginated = true;
-        }elseif ($resultShouldBePaginated == "false"){
+        }elseif (is_string($resultShouldBePaginated) && strtolower($resultShouldBePaginated) === "false"){
             $resultShouldBePaginated = false;
         }else{
             $resultShouldBePaginated = boolval($resultShouldBePaginated);
@@ -86,13 +88,14 @@ abstract class AbstractPaginatedQueryRequest
     }
 
     /**
-     * @param $searchEnabled
+     * 
+     * @param bool|string $searchEnabled
      */
     public function setSearchEnabled($searchEnabled)
     {
-        if ($searchEnabled == "true"){
+        if (is_string($searchEnabled) && strtolower($searchEnabled) === "true"){
             $searchEnabled = true;
-        }elseif ($searchEnabled == "false"){
+        }elseif (is_string($searchEnabled) && strtolower($searchEnabled) === "false"){
             $searchEnabled = false;
         }else{
             $searchEnabled = boolval($searchEnabled);
@@ -102,44 +105,47 @@ abstract class AbstractPaginatedQueryRequest
 
     /**
 	 * 
-	 * @param SearchGroup[] | \stdClass $searchParams
+	 * @param \stdClass|array $searchParams
 	 */
 	public function setSearchParams($searchParams)
 	{
-	    if (isset($searchParams->rules) && count($searchParams->rules) > 0){
+	    
+	    $searchParams = is_array($searchParams) ? $searchParams : json_decode(json_encode($searchParams), true);
+	    
+	    if (isset($searchParams['rules']) && count($searchParams['rules']) > 0){
 	        $rules = [];
-	        foreach ($searchParams->rules as $rule){
-	            $rules[] = new SearchRule($rule->field, $rule->op, $rule->data);
+	        foreach ($searchParams['rules'] as $rule){
+	            $rules[] = new SearchRule($rule['field'], $rule['op'], $rule['data']);
 	        }
-	        $this->searchParams = new SearchGroup($searchParams->groupOp, $rules);
+	        $this->searchParams = new SearchGroup($searchParams['groupOp'], $rules);
 	    } else if(isset($searchParams->groups)){
 	        $rules = [];
-	        $this->searchParams = new SearchGroup($searchParams->groupOp, $rules);
+	        $this->searchParams = new SearchGroup($searchParams['groupOp'], $rules);
 	    }
-	    if (isset($searchParams->groups) && count($searchParams->groups) > 0)
+	    if (isset($searchParams['groups']) && count($searchParams['groups']) > 0)
 	    {
-	        foreach($searchParams->groups as $group)
+	        foreach($searchParams['groups'] as $group)
 	        {
 	            $subRules = [];
-	            foreach($group->rules as $rule)
+	            foreach($group['rules'] as $rule)
 	            {
-	                $subRules[] = new SearchRule($rule->field, $rule->op, $rule->data);
+	                $subRules[] = new SearchRule($rule['field'], $rule['op'], $rule['data']);
 	            }
-	            $this->searchParams->addGroup(new SearchGroup($group->groupOp, $subRules));
+	            $this->searchParams->addGroup(new SearchGroup($group['groupOp'], $subRules));
 	        }
 	    }
 	}
 	
 	
 	/**
-	 * @return number
+	 * @return int
 	 */
 	public function getPage() {
 		return $this->page;
 	}
 	
 	/**
-	 * @return number
+	 * @return int
 	 */
 	public function getItemCount() {
 		return $this->itemCount;
@@ -153,7 +159,7 @@ abstract class AbstractPaginatedQueryRequest
 	}
 	
 	/**
-	 * @return SearchGroup[]
+	 * @return SearchGroup
 	 */
 	public function getSearchParams() {
 		return $this->searchParams;
@@ -161,6 +167,7 @@ abstract class AbstractPaginatedQueryRequest
 	
 	/**
 	 * 
+	 * @return array
 	 */
 	public function getOrderSpecs() {
 		return $this->orderSpecs;
@@ -172,4 +179,40 @@ abstract class AbstractPaginatedQueryRequest
 	public function getResultShouldBePaginated() {
 		return $this->resultShouldBePaginated;
 	}
+	
+	/**
+	 * 
+	 * @return array|null
+	 */
+	public function getMandatoryOrderSpecs()
+	{
+	    return $this->mandatoryOrderSpecs;
+	}
+	
+	public function setMandatoryOrderSpecs($mandatoryOrderSpecs)
+	{
+	    
+	    if (!empty($mandatoryOrderSpecs)) {
+	        $mandatoryOrderSpecs = is_array($mandatoryOrderSpecs) ? $mandatoryOrderSpecs : json_decode(json_encode($mandatoryOrderSpecs), true);
+	    }
+	    else {
+	        $mandatoryOrderSpecs = [];
+	    }
+	    
+	    $this->mandatoryOrderSpecs = $mandatoryOrderSpecs;
+	}
+    
+
+    public function setOrderSpecs($orderSpecs)
+    {
+        if (!empty($orderSpecs)) {
+            $orderSpecs = is_array($orderSpecs) ? $orderSpecs : json_decode(json_encode($orderSpecs), true);
+        }
+        else {
+            $orderSpecs = [];
+        }
+        
+        $this->orderSpecs = $orderSpecs;
+    }
+	
 }
