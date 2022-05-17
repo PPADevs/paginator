@@ -312,23 +312,35 @@ class Paginator {
 
 	/**
 	 * 
-	 * @return number
+	 * @return int
 	 */
 	public function getPageNumber()
 	{
 		return $this->request->getPage();
 	}
 
+	/**
+	 *
+	 * @return int
+	 */
 	public function getTotalPages()
 	{
 		return $this->totalPages;
 	}
 
+	/**
+	 *
+	 * @return int
+	 */
 	public function getTotalItems()
 	{
 		return $this->totalItems;
 	}
 
+	/**
+	 * 
+	 * @return string
+	 */
 	public function getSeparator()
 	{
 		return $this->separator;
