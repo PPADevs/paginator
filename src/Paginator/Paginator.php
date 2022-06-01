@@ -237,7 +237,7 @@ class Paginator {
 		}
 
 		// mandatory order spec
-		if (count($this->request->getMandatoryOrderSpecs()) > 0)
+		if (!empty($this->request->getMandatoryOrderSpecs()))
 		{
 		    foreach ($this->request->getMandatoryOrderSpecs() as $field => $direction)
 		    {
@@ -246,7 +246,7 @@ class Paginator {
 		}
 
 		// ordering
-		if (count($this->request->getOrderSpecs()) > 0)
+		if (!empty($this->request->getOrderSpecs()))
 		{
 			foreach ($this->request->getOrderSpecs() as $field => $direction)
 			{
@@ -288,7 +288,7 @@ class Paginator {
 	 */
 	private function cloneQuery(Query $query)
 	{
-		/* @var $cloneQuery Query */
+		/** @var Query $query */
 		$cloneQuery = clone $query;
 
 		$cloneQuery->setParameters(clone $query->getParameters());
