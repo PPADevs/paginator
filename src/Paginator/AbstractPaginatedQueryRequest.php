@@ -118,10 +118,11 @@ abstract class AbstractPaginatedQueryRequest
 	            $rules[] = new SearchRule($rule['field'], $rule['op'], $rule['data']);
 	        }
 	        $this->searchParams = new SearchGroup($searchParams['groupOp'], $rules);
-	    } else if(isset($searchParams->groups)){
+	    } else if(isset($searchParams['groups'])){
 	        $rules = [];
 	        $this->searchParams = new SearchGroup($searchParams['groupOp'], $rules);
 	    }
+	    
 	    if (isset($searchParams['groups']) && count($searchParams['groups']) > 0)
 	    {
 	        foreach($searchParams['groups'] as $group)
