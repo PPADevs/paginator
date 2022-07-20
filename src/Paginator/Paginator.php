@@ -241,7 +241,10 @@ class Paginator {
 		{
 		    foreach ($this->request->getMandatoryOrderSpecs() as $field => $direction)
 		    {
-		        $qb->addOrderBy($prefixTxt . $field, $direction);
+		        if (!empty($field)) {
+		            $direction = !empty($direction) ? $direction : 'ASC';
+		            $qb->addOrderBy($prefixTxt . $field, $direction);
+		        }
 		    }
 		}
 
@@ -250,7 +253,10 @@ class Paginator {
 		{
 			foreach ($this->request->getOrderSpecs() as $field => $direction)
 			{
-			    $qb->addOrderBy($prefixTxt . $field, $direction);
+			    if (!empty($field)) {
+			        $direction = !empty($direction) ? $direction : 'ASC';
+			        $qb->addOrderBy($prefixTxt . $field, $direction);
+			    }
 			}
 		}
 
